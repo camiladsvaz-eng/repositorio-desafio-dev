@@ -8,17 +8,18 @@ app.use(express.json());
 app.use(routes);
 
 app.use((_req, res) => {
-  return res.status(404).json({ message: "Rota não encontrada." });
+  res.status(404).json({ message: "Rota não encontrada." });
 });
 
 // Respostas JSON também para corpos malformados e erros inesperados do Express.
 const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
   if (error instanceof SyntaxError && "body" in error) {
-    return res.status(400).json({ message: "O corpo da requisição contém JSON inválido." });
+    res.status(400).json({ message: "O corpo da requisição contém JSON inválido." });
+    return;
   }
 
   console.error("Erro não tratado:", error);
-  return res.status(500).json({ message: "Erro interno do servidor." });
+  res.status(500).json({ message: "Erro interno do servidor." });
 };
 
 app.use(errorHandler);
