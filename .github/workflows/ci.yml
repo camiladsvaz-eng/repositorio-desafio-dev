@@ -47,3 +47,15 @@ jobs:
         run: yarn migration:deploy
       - name: Popular banco de exemplo
         run: yarn seed
+      - name: Iniciar API compilada e testar rotas
+        run: |
+          yarn start > /tmp/folhagem-api.log 2>&1 &
+          API_PID=$!
+          trap 'kill $API_PID 2>/dev/null || true' EXIT
+          for tentativa in $(seq 1 30); do
+            if curl --silent --fail http://localhost:3001/ > /dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          node tests/smoke.js
