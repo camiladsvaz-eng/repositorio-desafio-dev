@@ -46,6 +46,4 @@ Durante a revisão da automação, também foi identificado que era importante t
 
 Foi utilizada a ferramenta ChatGPT como apoio durante o desenvolvimento. Ela auxiliou na interpretação dos requisitos, na estruturação da implementação, na elaboração e revisão de trechos de código, na documentação e na identificação de pontos que precisavam de testes adicionais.
 
-As sugestões não foram tratadas como garantia de funcionamento. A implementação foi conferida por meio da revisão dos arquivos do projeto e de um workflow automatizado no GitHub Actions, que executa validações do Prisma, verificação de tipos, compilação, migrations, seed e testes HTTP. O cenário de vendas simultâneas também foi incluído nos testes.
-
-O uso da ferramenta serviu como apoio ao desenvolvimento; é importante compreender as decisões e o funcionamento do código entregue para conseguir explicá-los e realizar alterações quando necessário.
+As sugestões não foram tratadas como garantia de funcionamento. A implementação foi conferida por meio da revisão dos arquivos do projeto e de um workflow automatizado no GitHub Actions, que executa validações do Prisma, verificação de tipos, compilação, migrations, seed e testes HTTP.
