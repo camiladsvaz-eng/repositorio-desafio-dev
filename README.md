@@ -24,6 +24,7 @@ Pré-requisitos: Docker Desktop, Node.js 20+ e Yarn.
 | `yarn generate` | Gera Prisma Client |
 | `yarn typecheck` | Verifica tipos TypeScript |
 | `yarn build` | Compila para `dist/` |
+| `yarn seed` | Cadastra plantas de exemplo se o banco estiver vazio |
 | `docker compose logs -f server` | Mostra logs da API |
 
 ## Organização
@@ -65,4 +66,4 @@ Os exemplos de requisições, respostas, filtros e erros estão em [DOCUMENTACAO
 - Busca por nome sem diferenciar maiúsculas/minúsculas e ordenação por nome/preço.
 - Venda feita com decremento condicional atômico no banco para evitar estoque negativo em vendas simultâneas.
 - A migration remove o modelo de usuário do template e cria o modelo Planta.
-- Não há seed; o banco inicia vazio.
+- O seed opcional inclui cinco plantas de exemplo e não duplica registros se executado novamente. Rode `yarn seed` após aplicar as migrations.
