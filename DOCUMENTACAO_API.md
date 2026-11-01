@@ -127,10 +127,14 @@ Erros retornam JSON com a propriedade `message`, por exemplo:
 { "message": "Estoque insuficiente para realizar a venda." }
 ```
 
-## 6. Decisões e bônus
+## 6. Seed de exemplo
+
+O projeto inclui um seed opcional com cinco plantas. Após aplicar as migrations, execute `yarn seed`. O script só insere os exemplos quando a tabela está vazia, evitando duplicação em execuções repetidas.
+
+## 7. Decisões e bônus
 
 - Preços são inteiros em centavos para evitar imprecisão de ponto flutuante.
 - Controller valida os dados e define status HTTP; repository concentra as operações Prisma.
 - A venda usa decremento condicional atômico no PostgreSQL: a operação só ocorre se o estoque for suficiente. Isso impede que vendas simultâneas vendam a mesma unidade e deixem estoque negativo.
 - Bônus implementados: busca parcial por nome sem diferenciar caixa, ordenação por nome/preço e listagem de plantas esgotadas.
-- Seed não foi incluído; o banco começa vazio e recebe registros pela rota POST.
+- Seed incluído como funcionalidade opcional: cinco plantas de exemplo são inseridas somente se a tabela estiver vazia.
