@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express from "express";
+import express, { ErrorRequestHandler } from "express";
 import routes from "./routes";
 
 const app = express();
@@ -7,13 +7,24 @@ const app = express();
 app.use(express.json());
 app.use(routes);
 
-// Qualquer rota que não existe cai aqui
-app.use((req, res) => {
-  res.status(404).json({ message: "Rota não encontrada" });
+app.use((_req, res) => {
+  return res.status(404).json({ message: "Rota não encontrada." });
 });
+
+// Respostas JSON também para corpos malformados e erros inesperados do Express.
+const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
+  if (error instanceof SyntaxError && "body" in error) {
+    return res.status(400).json({ message: "O corpo da requisição contém JSON inválido." });
+  }
+
+  console.error("Erro não tratado:", error);
+  return res.status(500).json({ message: "Erro interno do servidor." });
+};
+
+app.use(errorHandler);
 
 const port = process.env.SERVER_PORT || 3001;
 
 app.listen(port, () => {
-  console.log(`🚀 Server running on port ${port}`);
+  console.log(`🌿 API da Folhagem & Cia executando na porta ${port}`);
 });
