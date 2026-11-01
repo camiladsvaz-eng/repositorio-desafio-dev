@@ -66,21 +66,30 @@ async function main() {
   assert.equal(atualizacao.status, 200, "PATCH deve retornar 200");
   assert.equal((await atualizacao.json()).estoque, 3, "PATCH deve atualizar estoque");
 
-  const venda = await requisicao(`/plantas/${planta.id}/venda`, {
-    method: "POST",
-    body: JSON.stringify({ quantidade: 1 }),
-  });
-  assert.equal(venda.status, 200, "Venda com estoque deve retornar 200");
-  assert.equal((await venda.json()).estoque, 2, "Venda deve decrementar o estoque");
+  const vendasSimultaneas = await Promise.all([
+    requisicao(`/plantas/${planta.id}/venda`, {
+      method: "POST",
+      body: JSON.stringify({ quantidade: 2 }),
+    }),
+    requisicao(`/plantas/${planta.id}/venda`, {
+      method: "POST",
+      body: JSON.stringify({ quantidade: 2 }),
+    }),
+  ]);
+  const statusVendas = vendasSimultaneas.map((resposta) => resposta.status).sort();
+  assert.deepEqual(statusVendas, [200, 400], "De duas vendas simultâneas de 2 vasos com estoque 3, apenas uma deve ser aceita");
+
+  const consultaAposConcorrencia = await requisicao(`/plantas/${planta.id}`);
+  assert.equal((await consultaAposConcorrencia.json()).estoque, 1, "Vendas simultâneas não podem deixar estoque negativo");
 
   const vendaSemEstoque = await requisicao(`/plantas/${planta.id}/venda`, {
     method: "POST",
-    body: JSON.stringify({ quantidade: 3 }),
+    body: JSON.stringify({ quantidade: 2 }),
   });
   assert.equal(vendaSemEstoque.status, 400, "Venda sem estoque deve retornar 400");
 
   const consultaAposFalha = await requisicao(`/plantas/${planta.id}`);
-  assert.equal((await consultaAposFalha.json()).estoque, 2, "Venda recusada não pode alterar estoque");
+  assert.equal((await consultaAposFalha.json()).estoque, 1, "Venda recusada não pode alterar estoque");
 
   const resumo = await requisicao("/plantas/estoque/valor-total");
   assert.equal(resumo.status, 200, "Resumo do estoque deve retornar 200");
